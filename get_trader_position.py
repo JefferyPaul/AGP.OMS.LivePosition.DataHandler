@@ -25,6 +25,9 @@ os.makedirs(OUTPUT_ROOT)
 
 
 if __name__ == '__main__':
+    import pymssql
+    pymssql.connect()
+
     # 读取oms db信息文件
     l_oms_db_infos: List[dict] = []
     with open(INFO_FILE) as f:
@@ -50,12 +53,14 @@ if __name__ == '__main__':
     # 最新持仓更新日期，用于剔除那些旧的trader持仓
     d_traders_position_update_time: Dict[str, datetime] = defaultdict(lambda: datetime(2020, 1, 1))
     for db_info in l_oms_db_infos:
+        print(db_info)
         _l_position: List[TraderPosition] = OmsDbManagement(
             db=db_info['db'],
             host=db_info['host'],
             user=db_info['user'],
             pwd=db_info['pwd'],
         ).query_positions()
+        # print(len(_l_position))
         for _p in _l_position:
             _trader = _p.Trader
             _ticker = _p.Ticker
@@ -77,9 +82,10 @@ if __name__ == '__main__':
             if _update_time > d_traders_position_update_time[_trader]:
                 d_traders_position_update_time[_trader] = _update_time
 
+    # print(len(d_traders_position))
     dt_now = datetime.now()
     for _trader, _trader_position in d_traders_position.items():
-        if dt_now - d_traders_position_update_time[_trader] > timedelta(days=1):
+        if dt_now - d_traders_position_update_time[_trader] > timedelta(days=12):
             continue
         output_file = os.path.join(OUTPUT_ROOT, _trader + '.csv')
         l_output_s = [

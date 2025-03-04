@@ -221,6 +221,7 @@ class OmsDbManagement:
             pool_size=50,    # 连接池的大小
             pool_timeout=600,   # 连接池如果没有连接了，最长的等待时间
             pool_recycle=-1,    # 多久之后对连接池中连接进行一次回收
+            tds_version="7.4"
         )
         # 创建DBSession类
         self.DBSession = sessionmaker(bind=self.engine)

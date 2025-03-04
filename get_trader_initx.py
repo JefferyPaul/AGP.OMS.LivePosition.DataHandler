@@ -60,15 +60,18 @@ if __name__ == '__main__':
     session = DBSession()
 
     # 获取db 数据
-    querying_dt = datetime.now() - timedelta(days=3)
+    querying_dt = datetime.now() - timedelta(days=12)
     l_pnls: List[PnL] = session.query(PnL).filter(PnL.DataTime > querying_dt).all()
     session.close()
     # 筛选
     d_traders_pnl: Dict[str, PnL] = {}
     for _pnl in l_pnls:
         _trader = _pnl.Trader
+        """
         if 'test' in _trader.lower():
-            continue
+            if not 'anthony' in _trader.lower():
+                continue
+        """
         _datatime = _pnl.DataTime
         if _trader not in d_traders_pnl:
             d_traders_pnl[_trader] = _pnl
@@ -79,5 +82,11 @@ if __name__ == '__main__':
     # 输出
     for _trader, _pnl in d_traders_pnl.items():
         output_file = os.path.join(OUTPUT_ROOT, _trader + '.csv')
+        
+        # ===========   
+        #if _trader in ['ShengShi8, 'ShengShi23']
+        
+        # =================
+        
         with open(output_file, 'w') as f:
             f.writelines(str(_pnl.InitX))

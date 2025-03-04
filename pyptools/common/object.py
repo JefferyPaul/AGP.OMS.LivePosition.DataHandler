@@ -151,6 +151,10 @@ class Product:
                 return 'CSI500'
             elif self.symbol == 'IH':
                 return 'SSE50'
+            elif self.symbol == 'IM':
+                return 'CSI1000'
+            elif self.symbol == 'T':
+                return 'TT'
         elif self.exchange == 'LME':
             if self.symbol == 'AH3M':
                 return 'LmeAH'
